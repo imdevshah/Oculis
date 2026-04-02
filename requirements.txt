@@ -1,0 +1,7 @@
+langchain-openai
+langgraph
+pydantic-settings
+python-dotenv
+# Added for your teammate's VLM work
+qwen-vl-utils 
+docling
