@@ -1,5 +1,4 @@
-# 👁️ Oculis
-The Zero-Trust Multimodal Assistant. > Agentic RAG + VLM Document Reasoning + Hallucination Guardrails.
+# Oculis
 
 Project Goal: Multimodal Agentic RAG.
 Tech Stack: Python 3.11+, LangGraph (Stateful), Qwen2-VL (Ingestion), Pinecone (Serverless).
