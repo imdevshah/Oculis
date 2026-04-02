@@ -1,5 +1,5 @@
-# Oculis
-Oculis is a zero-trust document assistant. It uses Vision-Language Models (VLMs) to 'see' through complex charts and tables, and a LangGraph-driven Agent to cross-verify every claim against source citations. If the AI can't prove it, Oculis won't say it.
+# 👁️ Oculis
+The Zero-Trust Multimodal Assistant. > Agentic RAG + VLM Document Reasoning + Hallucination Guardrails.
 
 Project Goal: Multimodal Agentic RAG.
 Tech Stack: Python 3.11+, LangGraph (Stateful), Qwen2-VL (Ingestion), Pinecone (Serverless).
