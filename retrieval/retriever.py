@@ -77,12 +77,13 @@ def retrieve(query: str, top_k: int = TOP_K) -> list:
     # 0.95 similarity is more intuitive than 0.05 distance.
     chunks = []
     for doc, meta, dist in zip(documents, metadatas, distances):
+        similarity = max(0, 1 - dist)
         chunks.append({
             "text":       doc,
             "source":     meta.get("source",   "unknown"),
             "page":       meta.get("page_num", "?"),
             "type":       meta.get("type",     "text"),
-            "similarity": round(1 - dist, 3)
+            "similarity": round(similarity, 3)
         })
 
     return chunks

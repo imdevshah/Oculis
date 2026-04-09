@@ -61,6 +61,6 @@ ids       = [str(uuid.uuid4()) for _ in fake_chunks] #This creates a unique ID f
 col.add(documents=texts, embeddings=vectors,
         metadatas=metadatas, ids=ids) #This line actually puts everything into the database. It says: "Hey ChromaDB, here are the sentences (documents), their meanings (embeddings), and the extra info (metadatas). Please store them under these unique IDs."
 
-print(f"✅ Done — {col.count()} chunks now in ChromaDB")
+print(f" Done — {col.count()} chunks now in ChromaDB")
 print("You can now build and test your agent against this data.")
 print("When your friend's real data is ready, delete chroma_db/ and use theirs.")

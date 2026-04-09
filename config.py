@@ -16,7 +16,7 @@ CONFIDENCE_THRESHOLD = 0.6
 
 # All free models
 EMBED_MODEL          = "all-MiniLM-L6-v2"   # runs locally, no API
-ANSWER_MODEL         = "llama-3.1-70b-versatile"  # Groq, free
+ANSWER_MODEL         = "llama-3.3-70b-versatile"  # Groq, free
 CAPTION_MODEL        = "llava"               # Ollama, local, free
 CHECK_MODEL          = "llama-3.1-8b-instant"     # Groq, free + fast
 
@@ -26,9 +26,9 @@ if __name__ == "__main__":
 
     # Test 1: .env loaded correctly
     if GROQ_API_KEY:
-        print(f"✅ GROQ_API_KEY loaded  (starts with: {GROQ_API_KEY[:8]}...)")
+        print(f" GROQ_API_KEY loaded  (starts with: {GROQ_API_KEY[:8]}...)")
     else:
-        print("❌ GROQ_API_KEY missing — check your .env file")
+        print(" GROQ_API_KEY missing — check your .env file")
 
     # Test 2: Groq API actually works
     print("\nTesting Groq connection...")
@@ -40,9 +40,9 @@ if __name__ == "__main__":
             messages=[{"role": "user", "content": "say hi in one word"}],
             max_tokens=5
         )
-        print(f"✅ Groq works — model said: {r.choices[0].message.content}")
+        print(f" Groq works — model said: {r.choices[0].message.content}")
     except Exception as e:
-        print(f"❌ Groq failed: {e}")
+        print(f" Groq failed: {e}")
 
     # Test 3: Sentence transformers work
     print("\nTesting local embeddings...")
@@ -50,9 +50,9 @@ if __name__ == "__main__":
         from sentence_transformers import SentenceTransformer
         model = SentenceTransformer(EMBED_MODEL)
         vec = model.encode("hello world")
-        print(f"✅ Embeddings work — vector size: {len(vec)}")
+        print(f" Embeddings work — vector size: {len(vec)}")
     except Exception as e:
-        print(f"❌ Embeddings failed: {e}")
+        print(f" Embeddings failed: {e}")
 
     # Test 4: ChromaDB works
     print("\nTesting ChromaDB...")
@@ -61,9 +61,9 @@ if __name__ == "__main__":
         db = chromadb.PersistentClient(path=CHROMA_PATH)
         col = db.get_or_create_collection("test")
         col.add(documents=["test doc"], ids=["test-1"])
-        print(f"✅ ChromaDB works — items in collection: {col.count()}")
+        print(f" ChromaDB works — items in collection: {col.count()}")
     except Exception as e:
-        print(f"❌ ChromaDB failed: {e}")
+        print(f" ChromaDB failed: {e}")
 
     # Test 5: Ollama works
     print("\nTesting Ollama...")
@@ -73,8 +73,8 @@ if __name__ == "__main__":
             model=CAPTION_MODEL,
             messages=[{"role": "user", "content": "say hi in one word"}]
         )
-        print(f"✅ Ollama works — model said: {r['message']['content']}")
+        print(f" Ollama works — model said: {r['message']['content']}")
     except Exception as e:
-        print(f"❌ Ollama failed: {e}")
+        print(f" Ollama failed: {e}")
 
     print("\n=== Config Test Complete ===")
