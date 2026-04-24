@@ -1,123 +1,130 @@
+import re
 import chromadb
 from sentence_transformers import SentenceTransformer
 from config import CHROMA_PATH, COLLECTION_NAME, EMBED_MODEL, TOP_K
 
-
-# Why load the model at module level (outside any function)?
-# Because loading a model takes ~1 second. If we loaded it
-# inside retrieve() every call would be 1 second slower.
-# Loading once at startup = fast for every subsequent call.
 print("Loading embedding model for retriever...")
 _embedder = SentenceTransformer(EMBED_MODEL)
 
 
 def embed_query(text: str) -> list:
-    """
-    Convert a text query into a vector (list of 384 numbers).
-
-    Why do we embed the query with the SAME model used during ingestion?
-    Because embedding models create a shared vector space.
-    "Q3 revenue" and "how much did the company earn" both point
-    to the same region of that space — but ONLY if embedded
-    with the same model. Mixing models = meaningless comparisons.
-    """
-    vector = _embedder.encode(text)
-    return vector.tolist()   # ChromaDB needs a plain list, not numpy array
+    return _embedder.encode(text).tolist()
 
 
 def retrieve(query: str, top_k: int = TOP_K) -> list:
-    """
-    The core function. Takes a plain English question,
-    returns the top_k most semantically similar chunks.
-
-    How it works step by step:
-    1. Embed the query → 384-number vector
-    2. ChromaDB compares that vector against ALL stored vectors
-       using cosine similarity (measures angle between vectors)
-    3. Returns the closest matches — chunks about similar topics
-
-    Args:
-        query  : the user's question in plain English
-        top_k  : how many chunks to return (default 5 from config)
-
-    Returns:
-        list of dicts, each containing:
-        - text       : the actual chunk content
-        - source     : which file it came from
-        - page       : which page number
-        - type       : "text" or "image_caption"
-        - similarity : 0.0 to 1.0 (1.0 = identical, 0.0 = unrelated)
-    """
-
-    # Connect to ChromaDB — same path as where dummy data was stored
     db  = chromadb.PersistentClient(path=CHROMA_PATH)
     col = db.get_collection(COLLECTION_NAME)
 
-    # Embed the query into a vector
     query_vector = embed_query(query)
+    query_lower  = query.lower()
 
-    # Search ChromaDB
-    # include= tells ChromaDB what to return alongside the results
-    # distances = how far each result is from the query vector
+    is_definition_query = any(p in query_lower for p in ["what is", "what are", "define","explain", "overview", "introduction"])
+
+
+    query_terms = [w for w in re.findall(r'\w+', query_lower)if len(w) > 3]
+
+
+    precise_refs = []
+    for m in re.finditer(
+        r'\b(table|figure|fig|section|appendix)\s*\.?\s*(\d+)\b',
+        query_lower
+    ):
+        precise_refs.append({m.group(1), m.group(2)})
+
+    # Fetch large candidate pool — tables of numbers have low base similarity
+    # We need page 16 to even appear before we can boost it
+    total_chunks = col.count()
+    fetch_k      = min(total_chunks, max(top_k * 6, 30))
+
     results = col.query(
         query_embeddings=[query_vector],
-        n_results=top_k,
+        n_results=fetch_k,
         include=["documents", "metadatas", "distances"]
     )
 
-    # ChromaDB returns nested lists because it supports batch queries.
-    # We only sent 1 query, so we take index [0] to unwrap the batch.
     documents = results["documents"][0]
     metadatas = results["metadatas"][0]
     distances = results["distances"][0]
 
-    # Why 1 - distance?
-    # ChromaDB returns DISTANCE (lower = more similar).
-    # We convert to SIMILARITY (higher = more similar) because
-    # 0.95 similarity is more intuitive than 0.05 distance.
+    # # Named proper nouns — skip common words
+    # stopwords = {
+    #     "what", "which", "where", "when", "who", "how", "why",
+    #     "according", "shown", "many", "does", "about", "from",
+    #     "each", "give", "tell", "list", "describe", "explain",
+    #     "the", "and", "for", "with", "that", "this", "are",
+    #     "were", "was", "have", "has", "been", "into", "page",
+    #     "information", "samples", "generated", "pattern", "patterns",
+    #     "number", "numbers", "per", "total", "show", "shows",
+    #     "how", "many", "were", "each", "hallucination", "table",
+    #     "figure", "section", "appendix"
+    # }
+    # named_terms = []
+    # for i, word in enumerate(query.split()):
+    #     clean = re.sub(r'[^a-zA-Z]', '', word).lower()
+    #     if (clean and len(clean) > 2 and i > 0
+    #             and word[0].isupper()
+    #             and clean not in stopwords):
+    #         named_terms.append(clean)
+
     chunks = []
     for doc, meta, dist in zip(documents, metadatas, distances):
-        similarity = max(0, 1 - dist)
+        doc_lower = doc.lower()
+        base_sim  = max(0.0, 1.0 - (dist / 2.0))
+        boost     = 0.0
+
+        page_num = meta.get("page_num", 999)
+        try:
+            page_num = int(page_num)
+        except:
+            page_num = 999
+
+        if is_definition_query and page_num <= 3:
+            boost += 0.6
+
+        term_matches = sum(1 for t in query_terms if t in doc_lower)
+        boost += term_matches* 0.05
+
+            
+        # for ref in precise_refs:
+        #     pattern = (rf'\b{re.escape(ref["type"])}'
+        #                rf'\s+{re.escape(ref["number"])}\b')
+        #     if re.search(pattern, doc_lower, re.IGNORECASE | re.DOTALL):
+        #         boost += 1.0
+        #         break
+        for r_type, r_num in precise_refs:
+            pattern = rf'\b{r_type}\s+{r_num}\b'
+            if re.search(pattern, doc_lower):
+                boost += 1.0
+                break
+
+        #  Named term boost
+        # for term in named_terms:
+        #     if term in doc_lower:
+        #         boost += 0.08
+        #         break
+
+        #  Page number boost
+        page_match = re.search(r'\bpage\s*(\d+)\b', query_lower)
+        if page_match:
+            if str(meta.get("page_num")) == page_match.group(1):
+                boost += 0.5  
+
+        #  Visual content boost
+        visual_words = {"chart", "diagram", "figure", "image",
+                        "plot", "graph", "visual", "picture"}
+        if any(w in query_lower for w in visual_words):
+            if meta.get("type") == "image_caption":
+                boost += 2.0
+        
+        final_score = base_sim +  boost
+
         chunks.append({
             "text":       doc,
-            "source":     meta.get("source",   "unknown"),
-            "page":       meta.get("page_num", "?"),
-            "type":       meta.get("type",     "text"),
-            "similarity": round(similarity, 3)
+            "source":     meta.get("source","unknown"),
+            "page":       page_num,
+            "type":       meta.get("type","text"),
+            "similarity": round(final_score, 3)
         })
 
-    return chunks
-
-
-# ── Test block ──────────────────────────────────────────────────────────────
-if __name__ == "__main__":
-
-    print("\n=== Retriever Test ===\n")
-
-    # Test queries — these should find relevant chunks
-    # even though the wording is different from what's stored
-    test_queries = [
-        "how much money did the company make?",
-        "how many people work here?",
-        "what does the revenue chart show?",    # should find image_caption chunk
-        "what is the customer churn rate?",
-    ]
-
-    for query in test_queries:
-        print(f"Query: '{query}'")
-        print("-" * 50)
-
-        results = retrieve(query, top_k=2)
-
-        for i, chunk in enumerate(results):
-            print(f"  Result {i+1}:")
-            print(f"    Similarity : {chunk['similarity']}")
-            print(f"    Type       : {chunk['type']}")
-            print(f"    Source     : {chunk['source']} p.{chunk['page']}")
-            print(f"    Text       : {chunk['text'][:100]}...")
-        print()
-
-    print("=== Done ===")
-
-    #To run this, type in terminal:
-    # python -m retrieval.retriever
+    chunks.sort(key=lambda x: x["similarity"], reverse=True)
+    return chunks[:top_k]

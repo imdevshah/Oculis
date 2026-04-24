@@ -7,19 +7,21 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 CHROMA_PATH  = "./chroma_db"
 COLLECTION_NAME = "documents"
 
-CHUNK_SIZE = 500
-CHUNK_OVERLAP = 50
-TOP_K = 5
-
-SELFCHECK_SAMPLES = 3
-CONFIDENCE_THRESHOLD = 0.6
+CHUNK_SIZE = 1000
+CHUNK_OVERLAP = 200
+TOP_K = 10
+SELFCHECK_SAMPLES = 2
+CONFIDENCE_THRESHOLD = 0.7
 
 # All free models
-EMBED_MODEL          = "all-MiniLM-L6-v2"   # runs locally, no API
-ANSWER_MODEL         = "llama-3.3-70b-versatile"  # Groq, free
-CAPTION_MODEL        = "llava"               # Ollama, local, free
-CHECK_MODEL          = "llama-3.1-8b-instant"     # Groq, free + fast
+EMBED_MODEL          = "BAAI/bge-m3"   # runs locally, no API
+ANSWER_MODEL         = "meta-llama/llama-4-scout-17b-16e-instruct"  # Groq, free
+CAPTION_MODEL        = "minicpm-v"               # Ollama, local, free
+CHECK_MODEL          = "llama-3.3-70b-versatile"     # Groq, free + fast
 
+# Token budget constants — prevents 413 errors across all endpoints
+MAX_CONTEXT_CHARS = 5000   # ~300 tokens — enough to verify answers
+MAX_CHUNK_CHARS   = 600    # per chunk returned by rag_search
 # Test block:
 if __name__ == "__main__":
     print("=== Config Test ===")

@@ -1,0 +1,23 @@
+What BLEU score did the Transformer (big) achieve on WMT 2014 English-to-German?
+
+How many encoder layers does the Transformer use?
+
+What is the dimension of the model (dmodel)?
+
+The big model trained for 300,000 steps and each step took 1.0 second. How many hours is that?
+
+If the base model has dmodel=512 and h=8 heads, what is dk for each head?
+
+What dropout rate was used for the English-to-French big model?
+
+Who proposed scaled dot-product attention?
+
+How many GPUs were used to train the model?
+
+What warmup_steps value was used for the learning rate schedule?
+
+Who are the authors of the BERT paper?
+
+The paper uses h=8 heads and dmodel=512. What are the values of dk and dv, and why were these dimensions chosen?
+
+How does the Transformer's complexity compare to recurrent layers when sequence length n is smaller than dimension d?
