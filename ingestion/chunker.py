@@ -5,17 +5,33 @@ def chunk_pages(pages: list) -> list:
     """
     Takes the 'pages' list from parse_pdf() and splits each page's text
     into smaller, overlapping chunks.
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
     Why chunk at all?
     The embedding model (all-MiniLM-L6-v2) has a ~512 token limit.
     A full PDF page can easily exceed that. Chunking breaks pages into
     pieces the model can embed properly.
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
     Why overlap?
     Without overlap, a sentence sitting at the boundary between two chunks
     would be split in half — losing context. Overlap copies the tail of
     one chunk into the start of the next, so no sentence is orphaned.
+<<<<<<< HEAD
     Args:
         pages: list of page dicts from parse_pdf()
                [{"page_num": 1, "text": "...", "source": "file.pdf"}, ...]
+=======
+
+    Args:
+        pages: list of page dicts from parse_pdf()
+               [{"page_num": 1, "text": "...", "source": "file.pdf"}, ...]
+
+>>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
     Returns:
         list of chunk dicts:
         [{"text": "...", "source": "file.pdf", "page_num": 1, "type": "text"}, ...]
@@ -67,14 +83,26 @@ def chunk_pages(pages: list) -> list:
 def add_image_captions(chunks: list, image_captions: list) -> list:
     """
     Appends VLM-generated image captions to the chunk list.
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
     Why treat captions separately?
     Captions come from vlm_processor.py as short, pre-formed sentences —
     they don't need splitting. We just tag them as "image_caption" so
     the retriever can label results correctly when showing sources.
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
     Args:
         chunks:         text chunks from chunk_pages()
         image_captions: list of caption dicts from vlm_processor.py
                         [{"page_num": 6, "caption": "...", "source": "file.pdf"}, ...]
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
     Returns:
         combined list — text chunks followed by caption chunks
     """
@@ -130,4 +158,8 @@ if __name__ == "__main__":
     for i, c in enumerate(chunks):
         print(f"Chunk {i+1} | page {c['page_num']} | type: {c['type']} | len: {len(c['text'])}")
         print(f"  Preview: {c['text'][:80]}...")
+<<<<<<< HEAD
         print()
+=======
+        print()
+>>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
