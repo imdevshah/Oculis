@@ -158,8 +158,4 @@ if __name__ == "__main__":
     for i, c in enumerate(chunks):
         print(f"Chunk {i+1} | page {c['page_num']} | type: {c['type']} | len: {len(c['text'])}")
         print(f"  Preview: {c['text'][:80]}...")
-<<<<<<< HEAD
         print()
-=======
-        print()
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700

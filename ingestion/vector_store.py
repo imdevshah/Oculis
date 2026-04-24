@@ -96,8 +96,5 @@ if __name__ == "__main__":
         ids=[str(uuid.uuid4())]
     )
     print(f"After insert: {vs.count()} chunks in collection.")
-<<<<<<< HEAD
     print("VectorStore test passed.")
-=======
     print("VectorStore test passed.")
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700

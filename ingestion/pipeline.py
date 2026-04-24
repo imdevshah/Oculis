@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-from ingestion.pdf_parser    import parse_pdf
-from ingestion.vlm_processor import process_images
-from ingestion.chunker       import chunk_pages, add_image_captions
+
 from ingestion.embedder      import embed_and_store, get_model
-=======
 import uuid
 from sentence_transformers import SentenceTransformer
 from ingestion.pdf_parser    import parse_pdf
@@ -17,12 +13,10 @@ from config import EMBED_MODEL
 # model loading takes ~1 second, so we do it once at startup.
 print("Loading embedding model for pipeline...")
 _model = SentenceTransformer(EMBED_MODEL)
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
 
 
 def run_pipeline(pdf_path: str, skip_vlm: bool = False) -> int:
     """
-<<<<<<< HEAD
     End-to-end ingestion: PDF → chunks → embeddings → ChromaDB."""
     # This is the single function the API (/upload endpoint) calls.
 
@@ -49,8 +43,8 @@ def run_pipeline(pdf_path: str, skip_vlm: bool = False) -> int:
     images = parsed["images"]
     print(f"{len(pages)} page(s) with text, {len(images)} image(s) found.")
 
-    # ── Step 2: Caption images ───────────────────────────────────────────────
-=======
+    # ── Step 2: Caption images
+    """""
     End-to-end ingestion: PDF → chunks → embeddings → ChromaDB.
 
     This is the single function the API (/upload endpoint) will call.
@@ -83,48 +77,40 @@ def run_pipeline(pdf_path: str, skip_vlm: bool = False) -> int:
     # ── Step 2: Caption images with VLM ─────────────────────────────────────
     # LLaVA describes each chart/diagram in plain English so it becomes
     # searchable just like regular text.
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
+
     captions = []
     if images and not skip_vlm:
         print(f"[Pipeline] Step 2/4 — Captioning {len(images)} image(s) with LLaVA...")
         captions = process_images(images)
-<<<<<<< HEAD
         print(f"{len(captions)} caption(s) generated.")
-=======
         print(f"           {len(captions)} caption(s) generated.")
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
     else:
         reason = "skip_vlm=True" if skip_vlm else "no images in document"
         print(f"[Pipeline] Step 2/4 — Skipping VLM ({reason}).")
 
     # ── Step 3: Chunk ────────────────────────────────────────────────────────
-<<<<<<< HEAD
     print("[Pipeline] Step 3/4 — Chunking text...")
     chunks = chunk_pages(pages)
     chunks = add_image_captions(chunks, captions)
     print(f"{len(chunks)} total chunk(s) ready for embedding.")
-=======
     # Split long pages into overlapping chunks that fit the embedding model's
     # token limit, then append caption chunks (already short — no splitting needed).
     print("[Pipeline] Step 3/4 — Chunking text...")
     chunks = chunk_pages(pages)
     chunks = add_image_captions(chunks, captions)
     print(f"           {len(chunks)} total chunk(s) ready for embedding.")
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
 
     if not chunks:
         print("[Pipeline] No chunks produced — nothing to store. Aborting.")
         return 0
 
     # ── Step 4: Embed and store ──────────────────────────────────────────────
-<<<<<<< HEAD
     # Delegates entirely to embedder.py — no duplicate model, no direct
     # ChromaDB calls, no uuid logic repeated here.
     print("[Pipeline] Step 4/4 — Embedding and storing in ChromaDB...")
     stored = embed_and_store(chunks)
     print(f"[Pipeline] Done — {stored} chunk(s) stored.\n")
     return stored
-=======
     # Encode all chunks into 384-dimensional vectors, then write to ChromaDB.
     # Using the same model as retriever.py is critical — mismatched models
     # produce vectors in different spaces and make similarity meaningless.
@@ -166,4 +152,3 @@ if __name__ == "__main__":
 
     stored = run_pipeline(path, skip_vlm=skip_vlm)
     print(f"Pipeline complete — {stored} chunk(s) stored.")
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700

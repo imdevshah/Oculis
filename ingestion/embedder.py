@@ -1,12 +1,11 @@
 import uuid
-<<<<<<< HEAD
 from sentence_transformers import SentenceTransformer
 from ingestion.vector_store import VectorStore
 from config import EMBED_MODEL
 
 # Load once at module level — pipeline.py imports this and reuses it.
 # Only ONE copy of the model lives in memory across the whole process.
-=======
+
 import chromadb
 from sentence_transformers import SentenceTransformer
 from config import CHROMA_PATH, COLLECTION_NAME, EMBED_MODEL
@@ -15,12 +14,10 @@ from config import CHROMA_PATH, COLLECTION_NAME, EMBED_MODEL
 # Load the model once at module level, not inside the function.
 # Reason: loading a SentenceTransformer takes ~1 second.
 # Doing it once at startup means every embed_and_store() call is fast.
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
 print("Loading embedding model for embedder...")
 _model = SentenceTransformer(EMBED_MODEL)
 
 
-<<<<<<< HEAD
 def get_model():
     """
     Returns the shared model instance.
@@ -37,9 +34,8 @@ def embed_and_store(chunks: list) -> int:
     VectorStore is the single place that knows about the database.
     If we swap ChromaDB for Pinecone tomorrow, only vector_store.py
     changes — this function stays identical.
-=======
 def embed_and_store(chunks: list) -> int:
-    """
+
     Embeds a list of chunk dicts and stores them in ChromaDB.
 
     Why pre-embed at ingestion time?
@@ -50,15 +46,11 @@ def embed_and_store(chunks: list) -> int:
     This function uses the SAME model as retriever.py (all-MiniLM-L6-v2).
     That's critical: query vectors and document vectors must come from
     the same model, or cosine similarity comparisons are meaningless.
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
 
     Args:
         chunks: list of chunk dicts from chunker.py
                 [{"text": "...", "source": "...", "page_num": 1, "type": "text"}, ...]
-<<<<<<< HEAD
-=======
 
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
     Returns:
         number of chunks stored
     """
@@ -66,8 +58,6 @@ def embed_and_store(chunks: list) -> int:
         print("No chunks to embed — skipping.")
         return 0
 
-<<<<<<< HEAD
-=======
     # Connect to ChromaDB on disk (creates the folder if it doesn't exist).
     # cosine space means similarity = 1 - cosine_distance,
     # which is what retriever.py assumes when it does `1 - dist`.
@@ -77,7 +67,6 @@ def embed_and_store(chunks: list) -> int:
         metadata={"hnsw:space": "cosine"}
     )
 
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
     texts     = [c["text"]     for c in chunks]
     metadatas = [
         {
@@ -88,7 +77,6 @@ def embed_and_store(chunks: list) -> int:
         for c in chunks
     ]
 
-<<<<<<< HEAD
     # encode() returns numpy array shape (n_chunks, 384).
     # .tolist() converts to plain Python list — ChromaDB requires that.
     vectors = _model.encode(texts).tolist()
@@ -104,7 +92,6 @@ def embed_and_store(chunks: list) -> int:
 
     total = vs.count()
     print(f"Stored {len(chunks)} chunks. Collection now has {total} total.")
-=======
     # encode() returns a numpy array of shape (n_chunks, 384).
     # .tolist() converts it to a plain Python list — ChromaDB requires that.
     vectors = _model.encode(texts).tolist()
@@ -121,19 +108,16 @@ def embed_and_store(chunks: list) -> int:
     )
 
     print(f"Stored {len(chunks)} chunks. Collection now has {col.count()} total.")
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
     return len(chunks)
 
 
 def clear_collection() -> None:
     """
-<<<<<<< HEAD
     Wipes and recreates the ChromaDB collection via VectorStore.
     Use this before loading real documents to remove dummy/test data.
-    """
+    
     vs = VectorStore()
     vs.clear()
-=======
     Deletes and recreates the ChromaDB collection.
 
     Use this when your teammate's real ingestion pipeline is ready
@@ -187,4 +171,3 @@ if __name__ == "__main__":
     print(f"\nEmbedding {len(chunks)} chunks...\n")
     stored = embed_and_store(chunks)
     print(f"\nDone — {stored} chunks embedded and stored in ChromaDB.")
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
