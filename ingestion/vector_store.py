@@ -6,17 +6,10 @@ class VectorStore:
     """
     A thin wrapper around ChromaDB that centralises all database access
     for the ingestion pipeline.
-<<<<<<< HEAD
-    Why a class instead of bare chromadb calls scattered around?
-    If you later swap ChromaDB for Pinecone or Milvus (the original plan),
-    you only change this one file — embedder.py and pipeline.py stay the same.
-=======
-
     Why a class instead of bare chromadb calls scattered around?
     If you later swap ChromaDB for Pinecone or Milvus (the original plan),
     you only change this one file — embedder.py and pipeline.py stay the same.
 
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
     Usage:
         vs = VectorStore()
         vs.add(texts, vectors, metadatas, ids)
@@ -36,10 +29,6 @@ class VectorStore:
     def add(self, texts: list, vectors: list, metadatas: list, ids: list) -> None:
         """
         Store a batch of chunks in ChromaDB.
-<<<<<<< HEAD
-=======
-
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
         Args:
             texts     : raw text strings (what the retriever returns to the agent)
             vectors   : pre-computed embeddings — list of 384-float lists
@@ -60,10 +49,6 @@ class VectorStore:
     def clear(self) -> None:
         """
         Delete and recreate the collection (wipes all stored chunks).
-<<<<<<< HEAD
-=======
-
->>>>>>> 4d3477a2ccb7cce11afb29df12df669f7faa5700
         Use this before loading real documents to remove dummy/test data.
         Warning: irreversible — all vectors are gone after this call.
         """
