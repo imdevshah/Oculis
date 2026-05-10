@@ -1,9 +1,6 @@
- ██████╗  ██████╗██╗   ██╗██╗     ██╗███████╗
-██╔═══██╗██╔════╝██║   ██║██║     ██║██╔════╝
-██║   ██║██║     ██║   ██║██║     ██║███████╗
-██║   ██║██║     ██║   ██║██║     ██║╚════██║
-╚██████╔╝╚██████╗╚██████╔╝███████╗██║███████║
- ╚═════╝  ╚═════╝ ╚═════╝ ╚══════╝╚═╝╚══════╝
+<div align="center">
+
+# 🔍 Oculis
 **Multimodal Agentic RAG · VLM Document Reasoning · Self-Correcting Hallucination Guardrails**
 **Built for Verifiable Document Intelligence.**
 
