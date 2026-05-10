@@ -129,5 +129,8 @@ def check(question: str, answer: str, context: str) -> dict:
             f"Low confidence ({confidence:.0%}). "
             f"Answer may not be fully supported. "
             f"[consistency={consistency:.2f}, nli={nli:.2f}, faithfulness={faith:.2f}]"
-        ) if flagged else ""
+        ) if flagged else "",
+        "consistency": round(consistency, 2),
+        "nli":         round(nli, 2),
+        "faithfulness":round(faith, 2)
     }

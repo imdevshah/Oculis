@@ -1,3 +1,4 @@
+from matplotlib.category import _log
 from langchain_groq import ChatGroq
 from langchain.agents import create_react_agent, AgentExecutor
 from langchain.prompts import PromptTemplate
@@ -5,8 +6,6 @@ from agent.tools import rag_search, web_search, calculate
 from config import ANSWER_MODEL, GROQ_API_KEY
 
 _executor = None
-
-
 def build_agent():
     llm = ChatGroq(
         api_key=GROQ_API_KEY,
@@ -129,8 +128,13 @@ def _run_guardrails(question: str, raw_answer: str, context: str) -> dict:
             "answer":     raw_answer,
             "confidence": 0.5,
             "flagged":    False,
-            "warning":    "No document context retrieved — confidence unverified."
+            "warning":    "No document context retrieved — confidence unverified.",
+            "consistency": 0.5,
+            "nli":         0.5,
+            "faithfulness":0.5,
         }
+        _log(question, result, chunks=[])
+        return result
 
     try:
         from guardrails.checker import check
@@ -144,7 +148,7 @@ def _run_guardrails(question: str, raw_answer: str, context: str) -> dict:
         if not isinstance(result, dict) or "answer" not in result:
             raise ValueError(f"Unexpected checker output: {type(result)}")
 
-        return result
+        # return result
 
     except Exception as e:
         print(f"[Guardrails] check() failed: {e}")
@@ -152,8 +156,37 @@ def _run_guardrails(question: str, raw_answer: str, context: str) -> dict:
             "answer":     raw_answer,
             "confidence": 0.5,
             "flagged":    False,
-            "warning":    f"Guardrails check failed: {str(e)}"
+            "warning":    f"Guardrails check failed: {str(e)}",
+            "consistency": 0.5,
+            "nli":         0.5,
+            "faithfulness":0.5,
         }
+    try:
+        from retrieval.retriever import retrieve
+        chunks = retrieve(question)
+    except Exception:
+        chunks = []
+
+    _log(question, result, chunks)
+    return result
+
+def _log(question: str, result: dict, chunks: list):
+    """Logs query + result to eval/logs/oculis_log.json."""
+    try:
+        from eval.logger import log_query
+        log_query(
+            question=question,
+            answer=result.get("answer", ""),
+            confidence=result.get("confidence", 0.5),
+            flagged=result.get("flagged", False),
+            warning=result.get("warning", ""),
+            consistency=result.get("consistency", 0.5),
+            nli=result.get("nli", 0.5),
+            faithfulness=result.get("faithfulness", 0.5),
+            chunks=chunks,
+        )
+    except Exception as e:
+        print(f"[Logger] Logging failed: {e}")
 
 
 def answer(question: str, history: list = None) -> dict:
@@ -177,7 +210,10 @@ def answer(question: str, history: list = None) -> dict:
             "answer":     f"The agent encountered an error: {str(e)}",
             "confidence": 0.0,
             "flagged":    True,
-            "warning":    "Agent execution failed — answer may be unreliable."
+            "warning":    "Agent execution failed — answer may be unreliable.",
+            "consistency": 0.0,
+            "nli":         0.0,
+            "faithfulness":0.0,
         }
 
     raw_answer         = response.get("output", "No answer produced.")

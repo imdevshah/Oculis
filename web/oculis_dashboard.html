@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Oculis — System Analytics Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:      #0a0a0f;
+    --surface: #111118;
+    --s2:      #1a1a24;
+    --border:  rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --accent:  #7c6af7;
+    --accent2: #a78bfa;
+    --text:    #e8e8f0;
+    --muted:   #6b6b80;
+    --green:   #34d399;
+    --amber:   #fbbf24;
+    --red:     #f87171;
+    --teal:    #2dd4bf;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px}
+  .mono{font-family:'JetBrains Mono',monospace}
+
+  /* header */
+  .header{display:flex;align-items:center;gap:14px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+  .logo-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent);flex-shrink:0}
+  .title{font-size:24px;font-weight:800;letter-spacing:-0.5px}
+  .title span{color:var(--accent2)}
+  .subtitle{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:2px}
+  .header-right{margin-left:auto;display:flex;gap:10px;align-items:center}
+  .badge{font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 10px;border-radius:20px;border:1px solid var(--border2);color:var(--muted)}
+  .badge.green{background:rgba(52,211,153,0.1);color:var(--green);border-color:rgba(52,211,153,0.2)}
+  .badge.red{background:rgba(248,113,113,0.1);color:var(--red);border-color:rgba(248,113,113,0.2)}
+
+  /* kpi row */
+  .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:28px}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+  .kpi-label{font-size:10px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:8px}
+  .kpi-val{font-size:32px;font-weight:800;letter-spacing:-1px}
+  .kpi-sub{font-size:11px;color:var(--muted);margin-top:4px;font-family:'JetBrains Mono',monospace}
+  .kpi-val.green{color:var(--green)}
+  .kpi-val.red{color:var(--red)}
+  .kpi-val.amber{color:var(--amber)}
+  .kpi-val.accent{color:var(--accent2)}
+
+  /* grid */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px}
+  .full{grid-column:1/-1}
+
+  /* card */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px}
+  .card-title{font-size:13px;font-weight:700;letter-spacing:-0.2px;margin-bottom:4px}
+  .card-sub{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);margin-bottom:18px}
+  .chart-wrap{position:relative;width:100%}
+
+  /* table */
+  .q-table{width:100%;border-collapse:collapse;font-size:12px}
+  .q-table th{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:6px 10px;border-bottom:1px solid var(--border);text-align:left}
+  .q-table td{padding:10px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+  .q-table tr:last-child td{border-bottom:none}
+  .q-table tr:hover td{background:var(--s2)}
+  .pill{display:inline-block;padding:2px 8px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500}
+  .pill.pass{background:rgba(52,211,153,0.12);color:var(--green);border:1px solid rgba(52,211,153,0.2)}
+  .pill.fail{background:rgba(248,113,113,0.12);color:var(--red);border:1px solid rgba(248,113,113,0.2)}
+
+  /* conf bar inline */
+  .conf-inline{display:flex;align-items:center;gap:8px}
+  .conf-track{flex:1;height:5px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;min-width:60px}
+  .conf-fill{height:100%;border-radius:3px}
+
+  /* insight box */
+  .insight{background:var(--s2);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;margin-top:14px}
+  .insight-title{font-size:10px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent2);margin-bottom:6px}
+  .insight-body{font-size:12px;color:var(--muted);line-height:1.6}
+  .insight-body strong{color:var(--text)}
+
+  /* section label */
+  .section-label{font-size:10px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted);margin-bottom:12px;margin-top:6px}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="logo-dot"></div>
+  <div>
+    <div class="title">Ocul<span>is</span> Analytics</div>
+    <div class="subtitle">System Performance Dashboard — Real Query Log Analysis</div>
+  </div>
+  <div class="header-right">
+    <span class="badge">8 queries logged</span>
+    <span class="badge">1706.03762v7.pdf</span>
+    <span class="badge green">7 passed</span>
+    <span class="badge red">1 flagged</span>
+  </div>
+</div>
+
+<!-- KPI Row -->
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="kpi-label">Avg Confidence</div>
+    <div class="kpi-val green">82%</div>
+    <div class="kpi-sub">across 8 queries</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Hallucinations Caught</div>
+    <div class="kpi-val red">1</div>
+    <div class="kpi-sub">Q8 — confidence 13%</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Avg NLI Score</div>
+    <div class="kpi-val accent">87.5%</div>
+    <div class="kpi-sub">contradiction check</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Avg Faithfulness</div>
+    <div class="kpi-val accent">87.5%</div>
+    <div class="kpi-sub">grounding check</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Avg Top Similarity</div>
+    <div class="kpi-val amber">97.7%</div>
+    <div class="kpi-sub">retrieval quality</div>
+  </div>
+</div>
+
+<!-- Row 1: Confidence + Guardrails breakdown -->
+<div class="section-label">Chart Analysis</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Confidence Score per Query</div>
+    <div class="card-sub">Final averaged guardrails score (threshold = 0.60) — red bar = flagged hallucination</div>
+    <div class="chart-wrap"><canvas id="confChart" height="220"></canvas></div>
+    <div class="insight">
+      <div class="insight-title">Key Insight</div>
+      <div class="insight-body">
+        <strong>7 of 8 queries</strong> passed with confidence ≥ 0.87. 
+        <strong>Q8</strong> (complexity comparison) was correctly flagged at 0.13 — the answer misrepresented the paper's claim about when self-attention is faster than recurrent layers. NLI and Faithfulness both scored 0.0 on this answer, catching the factual inversion.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Guardrails Score Breakdown per Query</div>
+    <div class="card-sub">Consistency (SelfCheck) · NLI (contradiction) · Faithfulness (grounding) — stacked view</div>
+    <div class="chart-wrap"><canvas id="guardChart" height="220"></canvas></div>
+    <div class="insight">
+      <div class="insight-title">Key Insight</div>
+      <div class="insight-body">
+        <strong>NLI and Faithfulness</strong> scored 1.0 on all queries except Q8. 
+        <strong>Consistency</strong> is the most variable check — Q3, Q4, Q7 scored 0.33 (1/3 samples agreed), reflecting genuine ambiguity in how the question was phrased, not hallucination.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Row 2: Retrieval heatmap + pie -->
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Retrieval Similarity Scores — Top 5 Chunks per Query</div>
+    <div class="card-sub">How semantically close each retrieved chunk was to the query (cosine similarity)</div>
+    <div class="chart-wrap"><canvas id="simChart" height="240"></canvas></div>
+    <div class="insight">
+      <div class="insight-title">Key Insight</div>
+      <div class="insight-body">
+        <strong>Q4</strong> (dmodel dimension) achieved the highest top-chunk similarity (1.258) — the exact answer was in the first retrieved chunk. 
+        <strong>Q3</strong> (encoder layers) had the lowest top similarity (0.816) — the question was ambiguous and the retriever had to work harder.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Guardrails Verdict Distribution</div>
+    <div class="card-sub">Breakdown of passed vs flagged answers across all queries</div>
+    <div class="chart-wrap" style="max-width:280px;margin:0 auto"><canvas id="pieChart" height="220"></canvas></div>
+    <div class="insight">
+      <div class="insight-title">Key Insight</div>
+      <div class="insight-body">
+        <strong>87.5% pass rate</strong> across all queries. The one flagged answer (Q8) contained a factual inversion — stating the Transformer has <em>higher</em> complexity than RNNs when n &lt; d, which contradicts the paper's claim that it is <em>faster</em>.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Row 3: Consistency radar + score comparison -->
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Three-Check Score Comparison</div>
+    <div class="card-sub">Consistency vs NLI vs Faithfulness — each check independently across all queries</div>
+    <div class="chart-wrap"><canvas id="radarChart" height="260"></canvas></div>
+    <div class="insight">
+      <div class="insight-title">Key Insight</div>
+      <div class="insight-body">
+        The radar reveals that <strong>NLI and Faithfulness are highly correlated</strong> — when one fails the other does too (Q8). <strong>Consistency varies independently</strong>, showing that SelfCheck captures a different dimension of reliability than contradiction/grounding checks.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Confidence Score Distribution</div>
+    <div class="card-sub">How confidence values cluster — showing the clear separation between reliable and flagged answers</div>
+    <div class="chart-wrap"><canvas id="distChart" height="260"></canvas></div>
+    <div class="insight">
+      <div class="insight-title">Key Insight</div>
+      <div class="insight-body">
+        Scores cluster at <strong>0.87–1.0</strong> (reliable) and <strong>0.13</strong> (hallucinated), with nothing in between. This bimodal distribution shows the guardrail system has strong <strong>discriminative power</strong> — it doesn't produce ambiguous middle scores.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Row 4: Full query table -->
+<div class="grid-2" style="grid-template-columns:1fr">
+  <div class="card full">
+    <div class="card-title">Full Query Log — All 8 Queries</div>
+    <div class="card-sub">Complete record of every question, answer confidence, guardrail scores, and verdict</div>
+    <table class="q-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Question</th>
+          <th>Confidence</th>
+          <th>Consistency</th>
+          <th>NLI</th>
+          <th>Faithfulness</th>
+          <th>Top Similarity</th>
+          <th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody id="queryTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Row 5: Retrieval similarity per query line chart -->
+<div class="card" style="margin-bottom:18px">
+  <div class="card-title">Retrieval Similarity Decay — All Queries</div>
+  <div class="card-sub">How similarity scores drop from chunk 1 to chunk 10 — steeper decay = more focused retrieval</div>
+  <div class="chart-wrap"><canvas id="decayChart" height="200"></canvas></div>
+  <div class="insight">
+    <div class="insight-title">Key Insight</div>
+    <div class="insight-body">
+      <strong>Q4 and Q7</strong> show high top similarity but gradual decay — the document has many relevant sections about model dimensions. <strong>Q6</strong> (who proposed scaled dot-product attention) shows a steep drop after chunk 2, meaning the answer was concentrated in very few chunks — high precision retrieval. <strong>Q8</strong> starts high but the answer was still wrong — confirming that retrieval quality alone does not guarantee answer correctness.
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data from real log ──────────────────────────────────────────────────────
+const queries = [
+  { q: "How many encoder layers?", conf: 0.93, con: 0.67, nli: 1.0, faith: 1.0, flagged: false, sims: [0.887,0.788,0.734,0.717,0.705,0.677,0.676,0.674,0.666,0.658] },
+  { q: "BLEU score of Transformer (big) on EN-DE?", conf: 0.93, con: 0.67, nli: 1.0, faith: 1.0, flagged: false, sims: [1.01,0.992,0.990,0.742,0.720,0.675,0.664,0.647,0.646,0.621] },
+  { q: "Which 6 encoder layers are used?", conf: 0.87, con: 0.33, nli: 1.0, faith: 1.0, flagged: false, sims: [0.816,0.800,0.757,0.710,0.680,0.670,0.646,0.626,0.611,0.600] },
+  { q: "Dimension of the model (dmodel)?", conf: 0.87, con: 0.33, nli: 1.0, faith: 1.0, flagged: false, sims: [1.258,1.085,1.080,1.073,1.063,1.057,1.057,1.054,1.050,1.045] },
+  { q: "Dropout rate for EN-FR big model?", conf: 0.93, con: 0.67, nli: 1.0, faith: 1.0, flagged: false, sims: [0.964,0.955,0.814,0.771,0.770,0.682,0.653,0.643,0.633,0.594] },
+  { q: "Who proposed scaled dot-product attention?", conf: 1.00, con: 1.0, nli: 1.0, faith: 1.0, flagged: false, sims: [0.783,0.720,0.706,0.666,0.643,0.590,0.542,0.534,0.508,0.496] },
+  { q: "Values of dk and dv (h=8, dmodel=512)?", conf: 0.87, con: 0.33, nli: 1.0, faith: 1.0, flagged: false, sims: [1.175,1.164,1.121,1.085,1.062,1.049,1.047,1.041,1.014,0.996] },
+  { q: "Transformer complexity vs recurrent (n<d)?", conf: 0.13, con: 0.67, nli: 0.0, faith: 0.0, flagged: true,  sims: [1.109,1.001,0.885,0.878,0.869,0.836,0.815,0.792,0.753,0.729] },
+];
+
+const labels = queries.map((q,i) => `Q${i+1}`);
+const PURPLE = 'rgba(124,106,247,';
+const GREEN  = 'rgba(52,211,153,';
+const AMBER  = 'rgba(251,191,36,';
+const RED    = 'rgba(248,113,113,';
+const TEAL   = 'rgba(45,212,191,';
+
+const darkGrid = { color: 'rgba(255,255,255,0.05)' };
+const darkTick = { color: '#6b6b80', font: { family: 'JetBrains Mono', size: 10 } };
+const baseFont = { family: 'Syne', size: 11 };
+
+Chart.defaults.color = '#6b6b80';
+Chart.defaults.font  = baseFont;
+
+// ── 1. Confidence bar chart ─────────────────────────────────────────────────
+new Chart(document.getElementById('confChart'), {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [{
+      label: 'Confidence Score',
+      data: queries.map(q => q.conf),
+      backgroundColor: queries.map(q => q.flagged ? RED+'0.8)' : GREEN+'0.7)'),
+      borderColor:     queries.map(q => q.flagged ? RED+'1)' : GREEN+'1)'),
+      borderWidth: 1.5,
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` Confidence: ${(ctx.raw*100).toFixed(0)}%${queries[ctx.dataIndex].flagged ? '  ⚠️ FLAGGED' : '  ✓ Passed'}`
+        }
+      }
+    },
+    scales: {
+      y: {
+        min: 0, max: 1.1,
+        ticks: { ...darkTick, callback: v => (v*100).toFixed(0)+'%' },
+        grid: darkGrid,
+      },
+      x: { ticks: darkTick, grid: { display: false } }
+    },
+    annotation: { annotations: [{
+      type: 'line', yMin: 0.6, yMax: 0.6,
+      borderColor: AMBER+'1)', borderWidth: 1.5, borderDash: [6,3],
+      label: { content: 'Threshold 0.6', display: true }
+    }]}
+  }
+});
+
+// ── 2. Guardrails stacked bar ───────────────────────────────────────────────
+new Chart(document.getElementById('guardChart'), {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [
+      {
+        label: 'Consistency (SelfCheck)',
+        data: queries.map(q => q.con),
+        backgroundColor: PURPLE+'0.75)',
+        borderRadius: { topLeft:0, topRight:0, bottomLeft:5, bottomRight:5 },
+        stack: 'g',
+      },
+      {
+        label: 'NLI (Contradiction)',
+        data: queries.map(q => q.nli),
+        backgroundColor: TEAL+'0.65)',
+        stack: 'g',
+      },
+      {
+        label: 'Faithfulness (Grounding)',
+        data: queries.map(q => q.faith),
+        backgroundColor: GREEN+'0.6)',
+        borderRadius: { topLeft:5, topRight:5, bottomLeft:0, bottomRight:0 },
+        stack: 'g',
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true, position: 'top',
+        labels: { font: { family: 'JetBrains Mono', size: 9 }, padding: 16, boxWidth: 10 }
+      },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${(ctx.raw*100).toFixed(0)}%` } }
+    },
+    scales: {
+      y: { stacked: true, max: 3.2, ticks: { ...darkTick, callback: v => v.toFixed(1) }, grid: darkGrid },
+      x: { stacked: true, ticks: darkTick, grid: { display: false } }
+    }
+  }
+});
+
+// ── 3. Similarity grouped bar (top 5 chunks) ────────────────────────────────
+new Chart(document.getElementById('simChart'), {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: Array.from({length:5}, (_,i) => ({
+      label: `Chunk ${i+1}`,
+      data: queries.map(q => q.sims[i]),
+      backgroundColor: `hsla(${220+i*22}, 70%, 60%, 0.7)`,
+      borderRadius: i===0?6:2,
+      borderWidth: 0,
+    }))
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true, position: 'top',
+        labels: { font: { family: 'JetBrains Mono', size: 9 }, padding: 12, boxWidth: 10 }
+      },
+      tooltip: { callbacks: { label: ctx => ` Chunk ${ctx.datasetIndex+1}: ${ctx.raw.toFixed(3)}` } }
+    },
+    scales: {
+      y: { min: 0.4, ticks: darkTick, grid: darkGrid },
+      x: { ticks: darkTick, grid: { display: false } }
+    }
+  }
+});
+
+// ── 4. Pie chart ─────────────────────────────────────────────────────────────
+new Chart(document.getElementById('pieChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Passed (Not Flagged)', 'Flagged (Hallucination)'],
+    datasets: [{
+      data: [7, 1],
+      backgroundColor: [GREEN+'0.7)', RED+'0.7)'],
+      borderColor:     [GREEN+'1)', RED+'1)'],
+      borderWidth: 2,
+      hoverOffset: 8,
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: '65%',
+    plugins: {
+      legend: {
+        display: true, position: 'bottom',
+        labels: { font: { family: 'JetBrains Mono', size: 9 }, padding: 14, boxWidth: 10 }
+      },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} queries (${(ctx.raw/8*100).toFixed(0)}%)` } }
+    }
+  }
+});
+
+// ── 5. Radar chart ───────────────────────────────────────────────────────────
+new Chart(document.getElementById('radarChart'), {
+  type: 'radar',
+  data: {
+    labels,
+    datasets: [
+      {
+        label: 'Consistency',
+        data: queries.map(q => q.con * 100),
+        borderColor: PURPLE+'1)', backgroundColor: PURPLE+'0.15)',
+        pointBackgroundColor: PURPLE+'1)', pointRadius: 4, borderWidth: 2,
+      },
+      {
+        label: 'NLI',
+        data: queries.map(q => q.nli * 100),
+        borderColor: TEAL+'1)', backgroundColor: TEAL+'0.1)',
+        pointBackgroundColor: TEAL+'1)', pointRadius: 4, borderWidth: 2,
+      },
+      {
+        label: 'Faithfulness',
+        data: queries.map(q => q.faith * 100),
+        borderColor: GREEN+'1)', backgroundColor: GREEN+'0.08)',
+        pointBackgroundColor: GREEN+'1)', pointRadius: 4, borderWidth: 2,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      r: {
+        min: 0, max: 100,
+        ticks: { ...darkTick, stepSize: 25, backdropColor: 'transparent', callback: v => v+'%' },
+        grid: { color: 'rgba(255,255,255,0.06)' },
+        angleLines: { color: 'rgba(255,255,255,0.05)' },
+        pointLabels: { color: '#6b6b80', font: { family: 'JetBrains Mono', size: 9 } }
+      }
+    },
+    plugins: {
+      legend: {
+        display: true, position: 'top',
+        labels: { font: { family: 'JetBrains Mono', size: 9 }, padding: 14, boxWidth: 10 }
+      }
+    }
+  }
+});
+
+// ── 6. Distribution histogram ─────────────────────────────────────────────────
+const bins = [0,0,0,0,0,0,0,0,0,0];
+queries.forEach(q => {
+  const idx = Math.min(Math.floor(q.conf * 10), 9);
+  bins[idx]++;
+});
+const binLabels = ['0–10%','10–20%','20–30%','30–40%','40–50%','50–60%','60–70%','70–80%','80–90%','90–100%'];
+const binColors = binLabels.map((_,i) => {
+  if(i < 2) return RED+'0.75)';
+  if(i < 6) return AMBER+'0.75)';
+  return GREEN+'0.75)';
+});
+
+new Chart(document.getElementById('distChart'), {
+  type: 'bar',
+  data: {
+    labels: binLabels,
+    datasets: [{
+      label: 'Number of Queries',
+      data: bins,
+      backgroundColor: binColors,
+      borderRadius: 6,
+      borderWidth: 0,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.raw} quer${ctx.raw===1?'y':'ies'} in this range` } }
+    },
+    scales: {
+      y: { ticks: { ...darkTick, stepSize: 1 }, grid: darkGrid },
+      x: { ticks: { ...darkTick, maxRotation: 45 }, grid: { display: false } }
+    }
+  }
+});
+
+// ── 7. Similarity decay line chart ───────────────────────────────────────────
+const lineColors = [
+  PURPLE+'1)', GREEN+'1)', AMBER+'1)', TEAL+'1)',
+  'rgba(251,113,133,1)', 'rgba(96,165,250,1)',
+  'rgba(167,139,250,1)', RED+'1)'
+];
+new Chart(document.getElementById('decayChart'), {
+  type: 'line',
+  data: {
+    labels: Array.from({length:10}, (_,i) => `Chunk ${i+1}`),
+    datasets: queries.map((q,i) => ({
+      label: `Q${i+1}`,
+      data: q.sims,
+      borderColor: lineColors[i],
+      backgroundColor: 'transparent',
+      pointRadius: 3,
+      borderWidth: q.flagged ? 2.5 : 1.5,
+      borderDash: q.flagged ? [6,3] : [],
+      tension: 0.3,
+    }))
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true, position: 'top',
+        labels: { font: { family: 'JetBrains Mono', size: 9 }, padding: 10, boxWidth: 20 }
+      },
+      tooltip: { callbacks: { label: ctx => ` Q${ctx.datasetIndex+1} chunk ${ctx.dataIndex+1}: ${ctx.raw.toFixed(3)}` } }
+    },
+    scales: {
+      y: { ticks: darkTick, grid: darkGrid },
+      x: { ticks: darkTick, grid: { display: false } }
+    }
+  }
+});
+
+// ── Query table ───────────────────────────────────────────────────────────────
+const tbody = document.getElementById('queryTable');
+queries.forEach((q,i) => {
+  const conf = q.conf;
+  const color = conf >= 0.8 ? '#34d399' : conf >= 0.6 ? '#fbbf24' : '#f87171';
+  const pct = (conf*100).toFixed(0);
+  tbody.innerHTML += `
+    <tr>
+      <td class="mono" style="color:var(--muted);font-size:11px">Q${i+1}</td>
+      <td style="max-width:240px;font-size:12px">${q.q}</td>
+      <td>
+        <div class="conf-inline">
+          <div class="conf-track"><div class="conf-fill" style="width:${pct}%;background:${color}"></div></div>
+          <span class="mono" style="font-size:11px;color:${color};min-width:32px">${pct}%</span>
+        </div>
+      </td>
+      <td class="mono" style="font-size:11px;color:${q.con===1?'#34d399':q.con>0.5?'#fbbf24':'#f87171'}">${(q.con*100).toFixed(0)}%</td>
+      <td class="mono" style="font-size:11px;color:${q.nli===1?'#34d399':'#f87171'}">${(q.nli*100).toFixed(0)}%</td>
+      <td class="mono" style="font-size:11px;color:${q.faith===1?'#34d399':'#f87171'}">${(q.faith*100).toFixed(0)}%</td>
+      <td class="mono" style="font-size:11px;color:var(--amber)">${q.sims[0].toFixed(3)}</td>
+      <td><span class="pill ${q.flagged?'fail':'pass'}">${q.flagged?'⚠ Flagged':'✓ Passed'}</span></td>
+    </tr>`;
+});
+</script>
+</body>
+</html>

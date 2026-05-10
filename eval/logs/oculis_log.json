@@ -1,0 +1,682 @@
+[
+  {
+    "timestamp": "2026-05-09T22:20:37.619945",
+    "question": "How many encoder layers does the Transformer use?",
+    "answer": "The Transformer uses 6 encoder layers [Source: Page 3].",
+    "confidence": 0.93,
+    "flagged": false,
+    "warning": "",
+    "scores": {
+      "consistency": 0.67,
+      "nli": 1.0,
+      "faithfulness": 1.0
+    },
+    "chunks": [
+      {
+        "text": "Figure 1: The Transformer - model architecture.\nThe Transformer follows this ove",
+        "source": "1706.03762v7.pdf",
+        "page": 3,
+        "type": "text",
+        "similarity": 0.887
+      },
+      {
+        "text": "The image depicts a flowchart titled \"Figure 1: The Transformer - model architec",
+        "source": "1706.03762v7.pdf",
+        "page": 3,
+        "type": "image_caption",
+        "similarity": 0.788
+      },
+      {
+        "text": "output values. These are concatenated and once again projected, resulting in the",
+        "source": "1706.03762v7.pdf",
+        "page": 5,
+        "type": "text",
+        "similarity": 0.734
+      },
+      {
+        "text": "ic tuning our model performs sur-\nprisingly well, yielding better results than a",
+        "source": "1706.03762v7.pdf",
+        "page": 10,
+        "type": "text",
+        "similarity": 0.717
+      },
+      {
+        "text": "Provided proper attribution is provided, Google hereby grants permission to\nrepr",
+        "source": "1706.03762v7.pdf",
+        "page": 1,
+        "type": "text",
+        "similarity": 0.705
+      },
+      {
+        "text": "setting to \u2212\u221e) all values in the input\nof the softmax which correspond to illega",
+        "source": "1706.03762v7.pdf",
+        "page": 5,
+        "type": "text",
+        "similarity": 0.677
+      },
+      {
+        "text": "Table 2: The Transformer achieves better BLEU scores than previous state-of-the-",
+        "source": "1706.03762v7.pdf",
+        "page": 8,
+        "type": "text",
+        "similarity": 0.676
+      },
+      {
+        "text": "Table 4: The Transformer generalizes well to English constituency parsing (Resul",
+        "source": "1706.03762v7.pdf",
+        "page": 10,
+        "type": "text",
+        "similarity": 0.674
+      },
+      {
+        "text": "ent positions\nof a single sequence in order to compute a representation of the s",
+        "source": "1706.03762v7.pdf",
+        "page": 2,
+        "type": "text",
+        "similarity": 0.666
+      },
+      {
+        "text": "so composed of a stack of N = 6 identical layers. In addition to the two\nsub-lay",
+        "source": "1706.03762v7.pdf",
+        "page": 3,
+        "type": "text",
+        "similarity": 0.658
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-05-09T22:21:16.072210",
+    "question": "What BLEU score did the Transformer (big) achieve on WMT 2014 English-to-German?",
+    "answer": "The Transformer (big) achieved a BLEU score of 28.4 on the WMT 2014 English-to-German translation task [Page 1, Page 6].",
+    "confidence": 0.93,
+    "flagged": false,
+    "warning": "",
+    "scores": {
+      "consistency": 0.67,
+      "nli": 1.0,
+      "faithfulness": 1.0
+    },
+    "chunks": [
+      {
+        "text": "For the base model, we use a rate of\nPdrop = 0.1.\nLabel Smoothing\nDuring trainin",
+        "source": "1706.03762v7.pdf",
+        "page": 8,
+        "type": "text",
+        "similarity": 1.01
+      },
+      {
+        "text": "Table 2: The Transformer achieves better BLEU scores than previous state-of-the-",
+        "source": "1706.03762v7.pdf",
+        "page": 8,
+        "type": "text",
+        "similarity": 0.992
+      },
+      {
+        "text": "g with recurrence and convolutions\nentirely. Experiments on two machine translat",
+        "source": "1706.03762v7.pdf",
+        "page": 1,
+        "type": "text",
+        "similarity": 0.99
+      },
+      {
+        "text": "ic tuning our model performs sur-\nprisingly well, yielding better results than a",
+        "source": "1706.03762v7.pdf",
+        "page": 10,
+        "type": "text",
+        "similarity": 0.742
+      },
+      {
+        "text": "Table 3: Variations on the Transformer architecture. Unlisted values are identic",
+        "source": "1706.03762v7.pdf",
+        "page": 9,
+        "type": "text",
+        "similarity": 0.72
+      },
+      {
+        "text": "Table 4: The Transformer generalizes well to English constituency parsing (Resul",
+        "source": "1706.03762v7.pdf",
+        "page": 10,
+        "type": "text",
+        "similarity": 0.675
+      },
+      {
+        "text": "s than 1/4 the training cost of the\nprevious state-of-the-art model. The Transfo",
+        "source": "1706.03762v7.pdf",
+        "page": 8,
+        "type": "text",
+        "similarity": 0.664
+      },
+      {
+        "text": "floating-point capacity of each GPU 5.\n6.2\nModel Variations\nTo evaluate the impo",
+        "source": "1706.03762v7.pdf",
+        "page": 8,
+        "type": "text",
+        "similarity": 0.647
+      },
+      {
+        "text": "Provided proper attribution is provided, Google hereby grants permission to\nrepr",
+        "source": "1706.03762v7.pdf",
+        "page": 1,
+        "type": "text",
+        "similarity": 0.646
+      },
+      {
+        "text": "can generalize to other tasks we performed experiments on English\nconstituency p",
+        "source": "1706.03762v7.pdf",
+        "page": 9,
+        "type": "text",
+        "similarity": 0.621
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-05-09T22:21:55.414943",
+    "question": "Which are the 6 encoder layers are used?",
+    "answer": "The 6 encoder layers used are identical layers, each consisting of two sub-layers: a multi-head self-attention mechanism and a simple, position-wise fully connected feed-forward network [Page 3].",
+    "confidence": 0.87,
+    "flagged": false,
+    "warning": "",
+    "scores": {
+      "consistency": 0.33,
+      "nli": 1.0,
+      "faithfulness": 1.0
+    },
+    "chunks": [
+      {
+        "text": "Figure 1: The Transformer - model architecture.\nThe Transformer follows this ove",
+        "source": "1706.03762v7.pdf",
+        "page": 3,
+        "type": "text",
+        "similarity": 0.816
+      },
+      {
+        "text": "The image depicts a flowchart titled \"Figure 1: The Transformer - model architec",
+        "source": "1706.03762v7.pdf",
+        "page": 3,
+        "type": "image_caption",
+        "similarity": 0.8
+      },
+      {
+        "text": "so composed of a stack of N = 6 identical layers. In addition to the two\nsub-lay",
+        "source": "1706.03762v7.pdf",
+        "page": 3,
+        "type": "text",
+        "similarity": 0.757
+      },
+      {
+        "text": "queries come from the previous decoder layer,\nand the memory keys and values com",
+        "source": "1706.03762v7.pdf",
+        "page": 5,
+        "type": "text",
+        "similarity": 0.71
+      },
+      {
+        "text": "setting to \u2212\u221e) all values in the input\nof the softmax which correspond to illega",
+        "source": "1706.03762v7.pdf",
+        "page": 5,
+        "type": "text",
+        "similarity": 0.68
+      },
+      {
+        "text": "generally more expensive than\nrecurrent layers, by a factor of k. Separable conv",
+        "source": "1706.03762v7.pdf",
+        "page": 7,
+        "type": "text",
+        "similarity": 0.67
+      },
+      {
+        "text": "nes encountered\nduring training.\n4\nWhy Self-Attention\nIn this section we compare",
+        "source": "1706.03762v7.pdf",
+        "page": 6,
+        "type": "text",
+        "similarity": 0.646
+      },
+      {
+        "text": "output values. These are concatenated and once again projected, resulting in the",
+        "source": "1706.03762v7.pdf",
+        "page": 5,
+        "type": "text",
+        "similarity": 0.626
+      },
+      {
+        "text": "byte-pair encoding [3], which has a shared source-\ntarget vocabulary of about 37",
+        "source": "1706.03762v7.pdf",
+        "page": 7,
+        "type": "text",
+        "similarity": 0.611
+      },
+      {
+        "text": "he embeddings, so that the two can be summed. There are many choices of position",
+        "source": "1706.03762v7.pdf",
+        "page": 6,
+        "type": "text",
+        "similarity": 0.6
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-05-09T22:22:38.037330",
+    "question": "What is the dimension of the model (dmodel)?",
+    "answer": "The dimension of the model (dmodel) is 512 [Source: Page 9].",
+    "confidence": 0.87,
+    "flagged": false,
+    "warning": "",
+    "scores": {
+      "consistency": 0.33,
+      "nli": 1.0,
+      "faithfulness": 1.0
+    },
+    "chunks": [
+      {
+        "text": "Figure 1: The Transformer - model architecture.\nThe Transformer follows this ove",
+        "source": "1706.03762v7.pdf",
+        "page": 3,
+        "type": "text",
+        "similarity": 1.258
+      },
+      {
+        "text": ", designed and implemented the first Transformer models and\nhas been crucially i",
+        "source": "1706.03762v7.pdf",
+        "page": 1,
+        "type": "text",
+        "similarity": 1.085
+      },
+      {
+        "text": "vements in computational efficiency through factorization tricks [21] and condit",
+        "source": "1706.03762v7.pdf",
+        "page": 2,
+        "type": "text",
+        "similarity": 1.08
+      },
+      {
+        "text": "The image depicts a flowchart titled \"Figure 1: The Transformer - model architec",
+        "source": "1706.03762v7.pdf",
+        "page": 3,
+        "type": "image_caption",
+        "similarity": 1.073
+      },
+      {
+        "text": "Provided proper attribution is provided, Google hereby grants permission to\nrepr",
+        "source": "1706.03762v7.pdf",
+        "page": 1,
+        "type": "text",
+        "similarity": 1.063
+      },
+      {
+        "text": "ent positions\nof a single sequence in order to compute a representation of the s",
+        "source": "1706.03762v7.pdf",
+        "page": 2,
+        "type": "text",
+        "similarity": 1.057
+      },
+      {
+        "text": "on eight P100 GPUs.\n2\nBackground\nThe goal of reducing sequential computation als",
+        "source": "1706.03762v7.pdf",
+        "page": 2,
+        "type": "text",
+        "similarity": 1.057
+      },
+      {
+        "text": "g with recurrence and convolutions\nentirely. Experiments on two machine translat",
+        "source": "1706.03762v7.pdf",
+        "page": 1,
+        "type": "text",
+        "similarity": 1.054
+      },
+      {
+        "text": "nce transduction models have an encoder-decoder structure [5, 2, 35].\nHere, the ",
+        "source": "1706.03762v7.pdf",
+        "page": 2,
+        "type": "text",
+        "similarity": 1.05
+      },
+      {
+        "text": "1\nIntroduction\nRecurrent neural networks, long short-term memory [13] and gated ",
+        "source": "1706.03762v7.pdf",
+        "page": 2,
+        "type": "text",
+        "similarity": 1.045
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-05-09T22:23:18.723340",
+    "question": "What dropout rate was used for the English-to-French big model?",
+    "answer": "The dropout rate used for the English-to-French big model was 0.1 [Page 8].",
+    "confidence": 0.93,
+    "flagged": false,
+    "warning": "",
+    "scores": {
+      "consistency": 0.67,
+      "nli": 1.0,
+      "faithfulness": 1.0
+    },
+    "chunks": [
+      {
+        "text": "For the base model, we use a rate of\nPdrop = 0.1.\nLabel Smoothing\nDuring trainin",
+        "source": "1706.03762v7.pdf",
+        "page": 8,
+        "type": "text",
+        "similarity": 0.964
+      },
+      {
+        "text": "s than 1/4 the training cost of the\nprevious state-of-the-art model. The Transfo",
+        "source": "1706.03762v7.pdf",
+        "page": 8,
+        "type": "text",
+        "similarity": 0.955
+      },
+      {
+        "text": "Table 2: The Transformer achieves better BLEU scores than previous state-of-the-",
+        "source": "1706.03762v7.pdf",
+        "page": 8,
+        "type": "text",
+        "similarity": 0.814
+      },
+      {
+        "text": "byte-pair encoding [3], which has a shared source-\ntarget vocabulary of about 37",
+        "source": "1706.03762v7.pdf",
+        "page": 7,
+        "type": "text",
+        "similarity": 0.771
+      },
+      {
+        "text": "can generalize to other tasks we performed experiments on English\nconstituency p",
+        "source": "1706.03762v7.pdf",
+        "page": 9,
+        "type": "text",
+        "similarity": 0.77
+      },
+      {
+        "text": "generally more expensive than\nrecurrent layers, by a factor of k. Separable conv",
+        "source": "1706.03762v7.pdf",
+        "page": 7,
+        "type": "text",
+        "similarity": 0.682
+      },
+      {
+        "text": "g with recurrence and convolutions\nentirely. Experiments on two machine translat",
+        "source": "1706.03762v7.pdf",
+        "page": 1,
+        "type": "text",
+        "similarity": 0.653
+      },
+      {
+        "text": "but no\ncheckpoint averaging. We present these results in Table 3.\nIn Table 3 row",
+        "source": "1706.03762v7.pdf",
+        "page": 9,
+        "type": "text",
+        "similarity": 0.643
+      },
+      {
+        "text": "ic tuning our model performs sur-\nprisingly well, yielding better results than a",
+        "source": "1706.03762v7.pdf",
+        "page": 10,
+        "type": "text",
+        "similarity": 0.633
+      },
+      {
+        "text": "Table 4: The Transformer generalizes well to English constituency parsing (Resul",
+        "source": "1706.03762v7.pdf",
+        "page": 10,
+        "type": "text",
+        "similarity": 0.594
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-05-09T22:23:53.391083",
+    "question": "Who proposed scaled dot-product attention?",
+    "answer": "Noam proposed scaled dot-product attention [Source 1, Page 1].",
+    "confidence": 1.0,
+    "flagged": false,
+    "warning": "",
+    "scores": {
+      "consistency": 1.0,
+      "nli": 1.0,
+      "faithfulness": 1.0
+    },
+    "chunks": [
+      {
+        "text": "Scaled Dot-Product Attention\nMulti-Head Attention\nFigure 2: (left) Scaled Dot-Pr",
+        "source": "1706.03762v7.pdf",
+        "page": 4,
+        "type": "text",
+        "similarity": 0.783
+      },
+      {
+        "text": "The image contains two diagrams related to attention mechanisms in neural networ",
+        "source": "1706.03762v7.pdf",
+        "page": 4,
+        "type": "image_caption",
+        "similarity": 0.72
+      },
+      {
+        "text": "attention functions are additive attention [2], and dot-product (multi-\nplicativ",
+        "source": "1706.03762v7.pdf",
+        "page": 4,
+        "type": "text",
+        "similarity": 0.706
+      },
+      {
+        "text": ", designed and implemented the first Transformer models and\nhas been crucially i",
+        "source": "1706.03762v7.pdf",
+        "page": 1,
+        "type": "text",
+        "similarity": 0.666
+      },
+      {
+        "text": "g a single attention function with dmodel-dimensional keys, values and queries,\n",
+        "source": "1706.03762v7.pdf",
+        "page": 4,
+        "type": "text",
+        "similarity": 0.643
+      },
+      {
+        "text": "g with recurrence and convolutions\nentirely. Experiments on two machine translat",
+        "source": "1706.03762v7.pdf",
+        "page": 1,
+        "type": "text",
+        "similarity": 0.59
+      },
+      {
+        "text": "queries come from the previous decoder layer,\nand the memory keys and values com",
+        "source": "1706.03762v7.pdf",
+        "page": 5,
+        "type": "text",
+        "similarity": 0.542
+      },
+      {
+        "text": "but no\ncheckpoint averaging. We present these results in Table 3.\nIn Table 3 row",
+        "source": "1706.03762v7.pdf",
+        "page": 9,
+        "type": "text",
+        "similarity": 0.534
+      },
+      {
+        "text": "output values. These are concatenated and once again projected, resulting in the",
+        "source": "1706.03762v7.pdf",
+        "page": 5,
+        "type": "text",
+        "similarity": 0.508
+      },
+      {
+        "text": "generally more expensive than\nrecurrent layers, by a factor of k. Separable conv",
+        "source": "1706.03762v7.pdf",
+        "page": 7,
+        "type": "text",
+        "similarity": 0.496
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-05-09T22:24:36.665077",
+    "question": "The paper uses h=8 heads and dmodel=512. What are the values of dk and dv, and why were these dimensions chosen?",
+    "answer": "The values of \\(d_k\\) and \\(d_v\\) are 64. These dimensions were chosen to keep the computation constant when using \\(h=8\\) heads and \\(d_{model}=512\\) [Source: Page 9, Table 3].",
+    "confidence": 0.87,
+    "flagged": false,
+    "warning": "",
+    "scores": {
+      "consistency": 0.33,
+      "nli": 1.0,
+      "faithfulness": 1.0
+    },
+    "chunks": [
+      {
+        "text": "Figure 1: The Transformer - model architecture.\nThe Transformer follows this ove",
+        "source": "1706.03762v7.pdf",
+        "page": 3,
+        "type": "text",
+        "similarity": 1.175
+      },
+      {
+        "text": "Provided proper attribution is provided, Google hereby grants permission to\nrepr",
+        "source": "1706.03762v7.pdf",
+        "page": 1,
+        "type": "text",
+        "similarity": 1.164
+      },
+      {
+        "text": "on eight P100 GPUs.\n2\nBackground\nThe goal of reducing sequential computation als",
+        "source": "1706.03762v7.pdf",
+        "page": 2,
+        "type": "text",
+        "similarity": 1.121
+      },
+      {
+        "text": "g with recurrence and convolutions\nentirely. Experiments on two machine translat",
+        "source": "1706.03762v7.pdf",
+        "page": 1,
+        "type": "text",
+        "similarity": 1.085
+      },
+      {
+        "text": "so composed of a stack of N = 6 identical layers. In addition to the two\nsub-lay",
+        "source": "1706.03762v7.pdf",
+        "page": 3,
+        "type": "text",
+        "similarity": 1.062
+      },
+      {
+        "text": ", designed and implemented the first Transformer models and\nhas been crucially i",
+        "source": "1706.03762v7.pdf",
+        "page": 1,
+        "type": "text",
+        "similarity": 1.049
+      },
+      {
+        "text": "vements in computational efficiency through factorization tricks [21] and condit",
+        "source": "1706.03762v7.pdf",
+        "page": 2,
+        "type": "text",
+        "similarity": 1.047
+      },
+      {
+        "text": "The image depicts a flowchart titled \"Figure 1: The Transformer - model architec",
+        "source": "1706.03762v7.pdf",
+        "page": 3,
+        "type": "image_caption",
+        "similarity": 1.041
+      },
+      {
+        "text": "ent positions\nof a single sequence in order to compute a representation of the s",
+        "source": "1706.03762v7.pdf",
+        "page": 2,
+        "type": "text",
+        "similarity": 1.014
+      },
+      {
+        "text": "1\nIntroduction\nRecurrent neural networks, long short-term memory [13] and gated ",
+        "source": "1706.03762v7.pdf",
+        "page": 2,
+        "type": "text",
+        "similarity": 0.996
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-05-09T22:25:17.417233",
+    "question": "How does the Transformer's complexity compare to recurrent layers when sequence length n is smaller than dimension d?",
+    "answer": "The Transformer has a complexity of \\( O(n^2 \\cdot d) \\) compared to recurrent layers which have a complexity of \\( O(n \\cdot d^2) \\) when sequence length \\( n \\) is smaller than dimension \\( d \\). This indicates that when \\( n < d \\), the Transformer's complexity is higher than that of recurrent layers [Source: Page 6, Table 1].",
+    "confidence": 0.13,
+    "flagged": true,
+    "warning": "Low confidence (13%). Answer may not be fully supported. [consistency=0.67, nli=0.00, faithfulness=0.00]",
+    "scores": {
+      "consistency": 0.67,
+      "nli": 0.0,
+      "faithfulness": 0.0
+    },
+    "chunks": [
+      {
+        "text": "length n is smaller than the representation dimensionality d, which is most ofte",
+        "source": "1706.03762v7.pdf",
+        "page": 7,
+        "type": "text",
+        "similarity": 1.109
+      },
+      {
+        "text": "to\ntraverse in the network. The shorter these paths between any combination of p",
+        "source": "1706.03762v7.pdf",
+        "page": 6,
+        "type": "text",
+        "similarity": 1.001
+      },
+      {
+        "text": "Table 4: The Transformer generalizes well to English constituency parsing (Resul",
+        "source": "1706.03762v7.pdf",
+        "page": 10,
+        "type": "text",
+        "similarity": 0.885
+      },
+      {
+        "text": "ic tuning our model performs sur-\nprisingly well, yielding better results than a",
+        "source": "1706.03762v7.pdf",
+        "page": 10,
+        "type": "text",
+        "similarity": 0.878
+      },
+      {
+        "text": "nes encountered\nduring training.\n4\nWhy Self-Attention\nIn this section we compare",
+        "source": "1706.03762v7.pdf",
+        "page": 6,
+        "type": "text",
+        "similarity": 0.869
+      },
+      {
+        "text": "Table 1: Maximum path lengths, per-layer complexity and minimum number of sequen",
+        "source": "1706.03762v7.pdf",
+        "page": 6,
+        "type": "text",
+        "similarity": 0.836
+      },
+      {
+        "text": "he embeddings, so that the two can be summed. There are many choices of position",
+        "source": "1706.03762v7.pdf",
+        "page": 6,
+        "type": "text",
+        "similarity": 0.815
+      },
+      {
+        "text": "generally more expensive than\nrecurrent layers, by a factor of k. Separable conv",
+        "source": "1706.03762v7.pdf",
+        "page": 7,
+        "type": "text",
+        "similarity": 0.792
+      },
+      {
+        "text": "Figure 1: The Transformer - model architecture.\nThe Transformer follows this ove",
+        "source": "1706.03762v7.pdf",
+        "page": 3,
+        "type": "text",
+        "similarity": 0.753
+      },
+      {
+        "text": "s than 1/4 the training cost of the\nprevious state-of-the-art model. The Transfo",
+        "source": "1706.03762v7.pdf",
+        "page": 8,
+        "type": "text",
+        "similarity": 0.729
+      }
+    ]
+  }
+]

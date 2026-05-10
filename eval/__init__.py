@@ -1,3 +1,2 @@
-from eval.ragas_eval import run_eval
-
-__all__ = ["run_eval"]
+from eval.logger import log_query
+__all__ = ["log_query"]
